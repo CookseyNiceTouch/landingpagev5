@@ -15,7 +15,7 @@ const Hero = () => {
         <h2 className="hero-tagline">The OS for Creators</h2>
         
         <div className="hero-signup">
-          <p className="signup-text">Get early access:</p>
+          {/* <p className="signup-text">Get early access:</p> */}
           <MailerLiteForm />
         </div>
       </div>
