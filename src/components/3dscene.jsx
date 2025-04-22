@@ -44,7 +44,7 @@ const Scene3D = () => {
     // Set up camera with default position
     const camera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 0.1, 1000)
     // Store the original camera position - this will be our "zero point"
-    const defaultCameraPosition = new THREE.Vector3(4.84, 1.24, -4.59);
+    const defaultCameraPosition = new THREE.Vector3(4.08, 2.06, -4.61);
     camera.position.copy(defaultCameraPosition);
     camera.fov = 10;
     camera.updateProjectionMatrix();
@@ -65,7 +65,7 @@ const Scene3D = () => {
     
     // Enhanced lighting setup
     // Ambient light - subtle base illumination
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
     scene.add(ambientLight)
     
     // Key light - main directional light (warm tint)
@@ -80,7 +80,7 @@ const Scene3D = () => {
     scene.add(keyLight)
     
     // Fill light - softer light from opposite side (cool tint)
-    const fillLight = new THREE.DirectionalLight(0xe6f0ff, 0.6)
+    const fillLight = new THREE.DirectionalLight(0xe6f0ff, 1.5)
     fillLight.position.set(-5, 3, -5)
     scene.add(fillLight)
     
@@ -136,7 +136,7 @@ const Scene3D = () => {
     const loader = new GLTFLoader()
     // Put your model in the public folder and reference it like: '/your-model.gltf'
     loader.load(
-      '/officebitsgl.gltf',
+      '/officebitsglv2.gltf',
       (gltf) => {
         // Model successfully loaded
         const model = gltf.scene
