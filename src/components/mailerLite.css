@@ -90,7 +90,7 @@
 
 .ml-form-formContent.horozintalForm .ml-form-horizontalRow .ml-input-horizontal {
   flex: 1;
-  max-width: 500px;
+  max-width: 500px; 
 }
 
 .ml-form-formContent.horozintalForm .ml-form-horizontalRow .horizontal-fields {
@@ -163,7 +163,7 @@
 }
 
 .discord-button {
-  padding-left: 3rem;
+  padding-left: 3.2rem;
   background-image: url('../assets/discord.png'), linear-gradient(45deg, #67c8ff, #d387d1);
   background-repeat: no-repeat;
   background-position: 1rem center, center;

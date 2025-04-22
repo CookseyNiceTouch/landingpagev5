@@ -44,7 +44,7 @@ const MailerLiteForm = () => {
           <div className="ml-form-align-center">
             <div className="ml-form-embedWrapper embedForm">
               <div className="ml-form-embedBody ml-form-embedBodyHorizontal row-form">
-                <form className="ml-block-form" action="https://assets.mailerlite.com/jsonp/1413791/forms/150028848308684795/subscribe" data-code="" method="post" target="_blank">
+                <form className="ml-block-form" action="https://assets.mailerlite.com/jsonp/1413791/forms/150028848308684795/subscribe" data-code="" method="post">
                   <div className="ml-form-formContent horozintalForm">
                     <div className="ml-form-horizontalRow">
                       <div className="ml-input-horizontal">
