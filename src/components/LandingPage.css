@@ -19,7 +19,7 @@
   height: 100%;
   background: linear-gradient(135deg, #67c8ff 0%, #a198ff 50%, #d387d1 100%);
   z-index: 1;
-  background-image: url('https://placehold.co/2560x1440/00000000/FFFFFF00?text=');
+  background-image: url('../assets/bgfallback.png');
   background-size: cover;
   background-position: center;
   background-blend-mode: overlay;
@@ -78,7 +78,7 @@
 .hero-signup {
   margin-top: 2rem;
   width: 100%;
-  max-width: 600px;
+  /* max-width: 600px; */
 }
 
 .signup-text {
@@ -87,6 +87,7 @@
   font-weight: 500;
   margin-bottom: 1rem;
   color: white;
+  width: 100%; /* Ensure this takes full width */
 }
 
 .hero-gradient {

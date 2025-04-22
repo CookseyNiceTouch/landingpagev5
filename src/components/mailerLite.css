@@ -29,31 +29,63 @@
 }
 
 /* Container Styles */
+.signup-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+}
+
+.email-form-wrapper {
+  display: inline-block;
+  min-width: 250px;
+  max-width: 400px;
+}
+
+.discord-wrapper {
+  display: inline-block;
+  min-width: 120px;
+  /* margin-left: 1rem; */
+}
+
 #mlb2-24164656.ml-form-embedContainer {
   box-sizing: border-box;
-  display: table;
-  margin: 0 auto;
+  display: inline-block;
+  margin: 0;
   position: static;
   width: 100% !important;
+  max-width: 400px !important;
+  vertical-align: middle !important;
 }
 
 .ml-form-embedWrapper {
   background-color: transparent;
-  width: 100%;
-  display: block;
+  width: auto;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
 }
 
 .ml-form-embedBody {
   margin-bottom: 0;
   padding: 0;
+  width: auto;
 }
 
-/* Form Layout */
-.ml-form-embedBody .ml-form-horizontalRow {
+.ml-form-formContent.horozintalForm {
+  padding: 0;
+  margin: 0;
+}
+
+.ml-form-horizontalRow {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   height: auto;
   width: 100%;
-  display: flex;
-  gap: 0.5rem;
 }
 
 .ml-form-formContent.horozintalForm .ml-form-horizontalRow .ml-input-horizontal {
@@ -76,6 +108,7 @@
   font-size: 0.9rem;
   text-transform: capitalize;
   width: 100%;
+  min-width: 250px;
   line-height: 21px;
   height: auto;
   display: block;
@@ -94,8 +127,12 @@
 }
 
 /* Button Styles */
-.ml-form-horizontalRow button.primary {
+.app-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.8rem 1.5rem;
+  height: 2.8rem;
   background: linear-gradient(45deg, #67c8ff, #d387d1);
   color: white;
   border: none;
@@ -106,11 +143,31 @@
   text-transform: uppercase;
   font-family: 'Inter', sans-serif;
   min-width: 120px;
+  text-decoration: none;
+  text-align: center;
+  box-sizing: border-box;
 }
 
-.ml-form-horizontalRow button.primary:hover {
+.app-button:hover {
   transform: translateY(-4px);
-  box-shadow: 0 2px 24px rgba(255, 61, 139, 0.658);
+  box-shadow: 0 2px 24px rgb(255, 255, 255);
+}
+
+.ml-button-horizontal.primary {
+  margin: 0;
+  padding: 0;
+  height: 2.8rem;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.discord-button {
+  padding-left: 3rem;
+  background-image: url('../assets/discord.png'), linear-gradient(45deg, #67c8ff, #d387d1);
+  background-repeat: no-repeat;
+  background-position: 1rem center, center;
+  background-size: 1.5rem, 100% 100%;
 }
 
 /* Success Message */
@@ -150,5 +207,23 @@
   
   .ml-form-horizontalRow button.primary {
     width: 100%;
+  }
+  
+  .signup-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .email-form-wrapper,
+  .discord-wrapper {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  .discord-button {
+    width: 100%;
+    justify-content: center;
   }
 } 
