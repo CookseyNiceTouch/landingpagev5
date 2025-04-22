@@ -1,0 +1,144 @@
+.features-section {
+  position: relative;
+  width: 100%;
+  padding: 5rem 8rem;
+  background: linear-gradient(135deg, #5ab0e2 0%, #9b87e5 50%, #d387d1 100%);
+  color: white;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.features-intro {
+  position: relative;
+  z-index: 2; /* Above the particles */
+  max-width: 100%;
+  padding: 4rem 16rem;
+  margin: 0 auto 4rem auto;
+}
+
+.features-tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.2;
+  max-width: 1800px;
+  margin: 0 auto;
+  text-align: left;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.features-container {
+  position: relative;
+  z-index: 2; /* Above the particles */
+  max-width: 100%;
+  padding: 0 2rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8rem;
+}
+
+.feature-wrapper {
+  position: relative;
+  max-width: 1800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Feature Card Styles */
+.feature-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2rem;
+  backdrop-filter: blur(20px);
+}
+
+/* Left layout - image on left, text on right */
+.feature-image-left {
+  flex-direction: row;
+}
+
+/* Right layout - image on right, text on left */
+.feature-image-right {
+  flex-direction: row-reverse;
+}
+
+.feature-image-container {
+  flex: 1;
+  min-width: 300px;
+}
+
+.feature-image-left .feature-image-container {
+  margin-right: 2rem;
+  margin-left: 0;
+}
+
+.feature-image-right .feature-image-container {
+  margin-left: 2rem;
+  margin-right: 0;
+}
+
+.feature-image {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #D7A7D6 0%, #9859A7 100%);
+  display: block;
+  max-width: 100%;
+}
+
+.feature-content {
+  flex: 1;
+  min-width: 300px;
+  text-align: left;
+}
+
+.feature-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.feature-description {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .features-section {
+    padding: 3rem 1rem;
+  }
+  
+  .features-tagline {
+    font-size: 1.3rem;
+  }
+  
+  .features-intro {
+    padding: 2rem 1rem;
+  }
+  
+  .feature-card, 
+  .feature-image-left,
+  .feature-image-right {
+    flex-direction: column;
+  }
+  
+  .feature-image-container,
+  .feature-image-left .feature-image-container,
+  .feature-image-right .feature-image-container {
+    margin-right: 0;
+    margin-left: 0;
+    margin-bottom: 2rem;
+    width: 100%;
+  }
+} 

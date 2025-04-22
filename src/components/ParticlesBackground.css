@@ -1,0 +1,56 @@
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none; /* So it doesn't interfere with user interaction */
+  z-index: 1;
+  
+  /* 3D space setup - uses CSS variables for easier JS control */
+  perspective: var(--perspective, 800px);
+  transform-style: preserve-3d;
+  perspective-origin: 50% 50%;
+  
+  /* Debug outline - remove in production */
+  /* outline: 1px solid rgba(255, 0, 0, 0.2); */
+}
+
+.particle {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+  
+  /* Performance optimizations */
+  will-change: transform;
+  backface-visibility: hidden;
+  
+  /* The JS sets transform directly, this is just for floating motion */
+  animation: float-alt1 20s infinite ease-in-out;
+}
+
+/* Define multiple different float animations */
+@keyframes float-alt1 {
+  0%, 100% { margin-left: 0; margin-top: 0; }
+  25% { margin-left: 10px; margin-top: -10px; }
+  50% { margin-left: -5px; margin-top: 5px; }
+  75% { margin-left: -10px; margin-top: -5px; }
+}
+
+@keyframes float-alt2 {
+  0%, 100% { margin-left: 0; margin-top: 0; }
+  20% { margin-left: -15px; margin-top: 10px; }
+  40% { margin-left: 10px; margin-top: 15px; }
+  60% { margin-left: 15px; margin-top: -5px; }
+  80% { margin-left: -10px; margin-top: -15px; }
+}
+
+@keyframes float-alt3 {
+  0%, 100% { margin-left: 0; margin-top: 0; }
+  25% { margin-left: 20px; margin-top: 0px; }
+  50% { margin-left: 0px; margin-top: 20px; }
+  75% { margin-left: -20px; margin-top: 0px; }
+} 
