@@ -27,10 +27,17 @@ const Hero = () => {
   
   return (
     <div className="hero-section">
-      {/* Original background as fallback while 3D scene loads */}
-      <div className={`hero-background ${isLoading3D ? 'visible' : 'fallback'}`} />
+      {/* Background gradient - always visible */}
+      <div className="hero-background" />
       
-      {/* 3D scene as main background */}
+      {/* Loading indicator for 3D scene */}
+      {isLoading3D && (
+        <div className="hero-loading">
+          Loading 3D scene...
+        </div>
+      )}
+      
+      {/* 3D scene - only one instance */}
       <div className="hero-3d-scene">
         <Scene3D />
       </div>

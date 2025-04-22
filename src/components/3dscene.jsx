@@ -7,55 +7,39 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 const Scene3D = () => {
   const mountRef = useRef(null);
   const loadingRef = useRef(null);
+  const isInitializedRef = useRef(false); // Ref to prevent double initialization
+  const rendererRef = useRef(null); // Ref to store renderer for cleanup
+  const sceneRef = useRef(null); // Ref to store scene for cleanup
+  const controlsRef = useRef(null); // Ref to store controls for cleanup
+  const animationFrameIdRef = useRef(null); // Ref for animation frame ID
 
   useEffect(() => {
+    // --- Prevent Double Initialization --- 
+    if (isInitializedRef.current) {
+      console.log('Skipping initialization, already done.');
+      return;
+    }
+    isInitializedRef.current = true;
+    console.log('Initializing 3D scene...');
+    
+    // --- Guard against missing mount point --- 
+    if (!mountRef.current) {
+      console.error("Mount point not found for 3D scene.");
+      return;
+    }
+    
+    // --- Check if canvas already exists (safety net) --- 
+    if (mountRef.current.querySelector('canvas')) {
+      console.warn('Canvas already exists in mount point, removing...');
+      mountRef.current.innerHTML = ''; // Clear previous canvas if any
+    }
+
     // Create scene, camera, and renderer
     const scene = new THREE.Scene()
+    sceneRef.current = scene; // Store scene in ref
     
-    // Update the gradient colors to match the CSS
-    const topColor = new THREE.Color(0x12a8ff); // Light blue
-    const bottomColor = new THREE.Color(0x5a4aff); // Purple
-    
-    const vertexShader = `
-      varying vec3 vWorldPosition;
-      void main() {
-        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-        vWorldPosition = worldPosition.xyz;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `;
-    
-    const fragmentShader = `
-      uniform vec3 topColor;
-      uniform vec3 bottomColor;
-      uniform float offset;
-      uniform float exponent;
-      varying vec3 vWorldPosition;
-      void main() {
-        float h = normalize(vWorldPosition + offset).y;
-        float t = max(0.0, min(1.0, (h * 0.5 + 0.5)));
-        vec3 color = mix(bottomColor, topColor, t);
-        gl_FragColor = vec4(color, 1.0);
-      }
-    `;
-    
-    const uniforms = {
-      topColor: { value: topColor },
-      bottomColor: { value: bottomColor },
-      offset: { value: 33 },
-      exponent: { value: 0.6 }
-    };
-    
-    const skyGeo = new THREE.SphereGeometry(500, 32, 15);
-    const skyMat = new THREE.ShaderMaterial({
-      uniforms: uniforms,
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
-      side: THREE.BackSide
-    });
-    
-    const sky = new THREE.Mesh(skyGeo, skyMat);
-    scene.add(sky);
+    // Make the scene background transparent
+    scene.background = null;
     
     // Set up camera with default position
     const camera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -67,8 +51,10 @@ const Scene3D = () => {
     
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
-      alpha: true // Keep alpha for gradient blending
+      alpha: true // Enable alpha for transparent background
     })
+    rendererRef.current = renderer; // Store renderer in ref
+    
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap // Softer shadows
@@ -79,11 +65,11 @@ const Scene3D = () => {
     
     // Enhanced lighting setup
     // Ambient light - subtle base illumination
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3)
     scene.add(ambientLight)
     
     // Key light - main directional light (warm tint)
-    const keyLight = new THREE.DirectionalLight(0xffffeb, 1.0)
+    const keyLight = new THREE.DirectionalLight(0xffffeb, 2.0)
     keyLight.position.set(5, 5, 5)
     keyLight.castShadow = true
     keyLight.shadow.mapSize.width = 1024
@@ -105,6 +91,7 @@ const Scene3D = () => {
     
     // Set up orbit controls with enhanced damping
     const controls = new OrbitControls(camera, renderer.domElement)
+    controlsRef.current = controls; // Store controls in ref
     controls.enableDamping = true
     controls.dampingFactor = 0.1
     controls.enableZoom = false
@@ -200,16 +187,17 @@ const Scene3D = () => {
     
     // Handle window resize
     const handleResize = () => {
+      if (!rendererRef.current) return; // Ensure renderer exists
       camera.aspect = window.innerWidth / window.innerHeight
       camera.updateProjectionMatrix()
-      renderer.setSize(window.innerWidth, window.innerHeight)
+      rendererRef.current.setSize(window.innerWidth, window.innerHeight)
     }
     
     window.addEventListener('resize', handleResize)
     
     // Animation loop with smooth camera movement
     function animate() {
-      requestAnimationFrame(animate)
+      animationFrameIdRef.current = requestAnimationFrame(animate)
       
       // Apply damping to smoothly transition to target rotation
       currentPhi += (targetPhi - currentPhi) * damping;
@@ -223,23 +211,70 @@ const Scene3D = () => {
       // Make sure camera always looks at the center
       camera.lookAt(cameraTarget);
       
-      controls.update()
-      renderer.render(scene, camera)
+      if (controlsRef.current) controlsRef.current.update()
+      if (rendererRef.current && sceneRef.current) {
+        rendererRef.current.render(sceneRef.current, camera)
+      }
     }
     
     animate()
     
-    // Cleanup on component unmount
+    // --- Enhanced Cleanup on component unmount --- 
     return () => {
+      console.log('Cleaning up 3D scene...');
+      isInitializedRef.current = false; // Reset initialization flag
+      
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('mousemove', handleMouseMove)
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement)
+      
+      // Cancel animation frame
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+        animationFrameIdRef.current = null;
       }
-      renderer.dispose()
-      controls.dispose()
+      
+      // Dispose of Three.js objects
+      if (controlsRef.current) {
+        controlsRef.current.dispose();
+        controlsRef.current = null;
+      }
+      
+      // Dispose scene resources (geometry, materials, textures)
+      if (sceneRef.current) {
+        sceneRef.current.traverse((object) => {
+          if (object.geometry) {
+            object.geometry.dispose();
+          }
+          
+          if (object.material) {
+            // Properly handle arrays of materials
+            const materials = Array.isArray(object.material) ? object.material : [object.material];
+            materials.forEach(material => {
+              // Dispose textures
+              Object.values(material).forEach(value => {
+                if (value instanceof THREE.Texture) {
+                  value.dispose();
+                }
+              });
+              material.dispose();
+            });
+          }
+        });
+        sceneRef.current = null;
+      }
+      
+      // Remove the renderer and its canvas
+      if (rendererRef.current) {
+        rendererRef.current.dispose();
+        if (mountRef.current && rendererRef.current.domElement && mountRef.current.contains(rendererRef.current.domElement)) {
+          mountRef.current.removeChild(rendererRef.current.domElement);
+        }
+        rendererRef.current = null;
+      }
+      
+      console.log('3D scene cleanup complete.');
     }
-  }, [])
+  }, []) // Empty dependency array ensures this runs only on mount/unmount
   
   return (
     <div className="scene-container" ref={mountRef}>
