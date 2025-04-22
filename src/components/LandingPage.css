@@ -1,0 +1,224 @@
+/* Hero Section Styles */
+.hero-section {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: white;
+  padding: 0;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #67c8ff 0%, #a198ff 50%, #d387d1 100%);
+  z-index: 1;
+  background-image: url('https://placehold.co/2560x1440/00000000/FFFFFF00?text=');
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: overlay;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1); /* Slight darkening for text readability */
+  z-index: 2;
+}
+
+.hero-content {
+  max-width: 1200px;
+  padding: 6rem 2rem 0 6rem;
+  margin: 0;
+  text-align: left;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.hero-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(4rem, 10vw, 14rem);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.hero-image-placeholder {
+  position: relative;
+  width: 100%;
+  max-width: 750px;
+  height: 400px;
+  margin: 50px auto 0;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.hero-signup {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.signup-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.hero-gradient {
+  width: 100%;
+  height: 58px;
+  background: linear-gradient(90deg, #067FBD 0%, #D4AED8 100%);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+}
+
+/* Features Section Styles */
+.features-section {
+  width: 100%;
+  padding: 5rem 8rem;
+  background: linear-gradient(135deg, #5ab0e2 0%, #9b87e5 50%, #d387d1 100%);
+  color: white;
+}
+
+.features-intro {
+  max-width: 100%;
+  padding: 4rem 16rem;
+  margin: 0 auto 4rem auto;
+}
+
+.features-tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.2;
+  max-width: 1800px;
+  margin: 0 auto;
+  text-align: left;
+  letter-spacing: -0.01em;
+}
+
+.features-container {
+  max-width: 100%;
+  padding: 0 2rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8rem;
+}
+
+.feature-wrapper {
+  max-width: 1800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Feature Card Styles */
+.feature-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2rem;
+  backdrop-filter: blur(20px);
+}
+
+/* Left layout - image on left, text on right */
+.feature-image-left {
+  flex-direction: row;
+}
+
+/* Right layout - image on right, text on left */
+.feature-image-right {
+  flex-direction: row-reverse;
+}
+
+.feature-image-container {
+  flex: 1;
+  min-width: 300px;
+}
+
+.feature-image-left .feature-image-container {
+  margin-right: 2rem;
+  margin-left: 0;
+}
+
+.feature-image-right .feature-image-container {
+  margin-left: 2rem;
+  margin-right: 0;
+}
+
+.feature-image {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #D7A7D6 0%, #9859A7 100%);
+  display: block;
+  max-width: 100%;
+}
+
+.feature-content {
+  flex: 1;
+  min-width: 300px;
+  text-align: left;
+}
+
+.feature-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.feature-description {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .feature-card, 
+  .feature-image-left,
+  .feature-image-right {
+    flex-direction: column;
+  }
+  
+  .feature-image-container,
+  .feature-image-left .feature-image-container,
+  .feature-image-right .feature-image-container {
+    margin-right: 0;
+    margin-left: 0;
+    margin-bottom: 2rem;
+    width: 100%;
+  }
+} 

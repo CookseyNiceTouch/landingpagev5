@@ -1,0 +1,154 @@
+@import url("https://assets.mlcdn.com/fonts.css?version=1742905");
+
+/* LOADER */
+.ml-form-embedSubmitLoad {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
+
+.ml-form-embedSubmitLoad:after {
+  content: " ";
+  display: block;
+  width: 11px;
+  height: 11px;
+  margin: 1px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  border-color: #ffffff #ffffff #ffffff transparent;
+  animation: ml-form-embedSubmitLoad 1.2s linear infinite;
+}
+
+@keyframes ml-form-embedSubmitLoad {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Container Styles */
+#mlb2-24164656.ml-form-embedContainer {
+  box-sizing: border-box;
+  display: table;
+  margin: 0 auto;
+  position: static;
+  width: 100% !important;
+}
+
+.ml-form-embedWrapper {
+  background-color: transparent;
+  width: 100%;
+  display: block;
+}
+
+.ml-form-embedBody {
+  margin-bottom: 0;
+  padding: 0;
+}
+
+/* Form Layout */
+.ml-form-embedBody .ml-form-horizontalRow {
+  height: auto;
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ml-form-formContent.horozintalForm .ml-form-horizontalRow .ml-input-horizontal {
+  flex: 1;
+  max-width: 500px;
+}
+
+.ml-form-formContent.horozintalForm .ml-form-horizontalRow .horizontal-fields {
+  width: 100%;
+}
+
+/* Input Styles */
+.ml-form-horizontalRow input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(93, 62, 255, 0.3);
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  width: 100%;
+  line-height: 21px;
+  height: auto;
+  display: block;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.ml-form-horizontalRow input:focus {
+  outline: none;
+  border-color: #9b87e5;
+  box-shadow: 0 0 0 2px rgba(93, 62, 255, 0.2);
+}
+
+.ml-form-horizontalRow input::placeholder {
+  color: #999;
+}
+
+/* Button Styles */
+.ml-form-horizontalRow button.primary {
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(45deg, #67c8ff, #d387d1);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  min-width: 120px;
+}
+
+.ml-form-horizontalRow button.primary:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 2px 24px rgba(255, 61, 139, 0.658);
+}
+
+/* Success Message */
+.row-success {
+  text-align: left;
+  padding: 0rem;
+  font-family: 'Inter', sans-serif;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.row-success h4 {
+  color: #eb87ff;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.row-success p {
+  color: #4CAF50;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Styles */
+@media only screen and (max-width: 768px) {
+  .ml-form-embedBody .ml-form-horizontalRow {
+    flex-direction: column;
+  }
+  
+  .ml-form-formContent.horozintalForm .ml-form-horizontalRow .ml-input-horizontal {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .ml-form-horizontalRow button.primary {
+    width: 100%;
+  }
+} 
