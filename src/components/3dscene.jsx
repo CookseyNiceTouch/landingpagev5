@@ -136,7 +136,7 @@ const Scene3D = () => {
     const loader = new GLTFLoader()
     // Put your model in the public folder and reference it like: '/your-model.gltf'
     loader.load(
-      '/officebitsglv2.gltf',
+      '/officebitsreduced.gltf',
       (gltf) => {
         // Model successfully loaded
         const model = gltf.scene
