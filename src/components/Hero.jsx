@@ -30,10 +30,10 @@ const Hero = () => {
       {/* Background gradient - always visible */}
       <div className="hero-background" />
       
-      {/* Loading indicator for 3D scene */}
+      {/* Subtle loading indicator - thin horizontal line */}
       {isLoading3D && (
-        <div className="hero-loading">
-          Loading 3D scene...
+        <div className="hero-loading-line">
+          <div className="hero-loading-line-progress"></div>
         </div>
       )}
       

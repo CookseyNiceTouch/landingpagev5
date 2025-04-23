@@ -22,7 +22,39 @@
   z-index: 0;
 }
 
-/* Loading indicator for 3D scene */
+/* Subtle loading line animation */
+.hero-loading-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px; /* Thin line */
+  z-index: 10;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.hero-loading-line-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  transform: translateX(-100%);
+  animation: loadingAnimation 2s infinite linear;
+}
+
+@keyframes loadingAnimation {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Loading indicator for 3D scene - keeping for reference but not using */
 .hero-loading {
   position: absolute;
   top: 50%;
