@@ -4,6 +4,17 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
+// Configuration object for easy tweaking
+const CONFIG = {
+  // Object hover animation settings
+  objectAnimation: {
+    movementDistance: 0.025, // Maximum distance objects move when hovered (reduced from 0.05)
+    rotationDegrees: 1, // Maximum rotation in degrees (+/-)
+    resetDelay: 3000, // Time in ms before objects return to original position
+    animationSpeed: 0.05 // Animation interpolation speed (higher = faster)
+  }
+};
+
 const Scene3D = () => {
   const mountRef = useRef(null);
   const loadingRef = useRef(null);
@@ -12,6 +23,9 @@ const Scene3D = () => {
   const sceneRef = useRef(null); // Ref to store scene for cleanup
   const controlsRef = useRef(null); // Ref to store controls for cleanup
   const animationFrameIdRef = useRef(null); // Ref for animation frame ID
+  const modelObjectsRef = useRef({}); // Ref to store model objects
+  const hoveredObjectRef = useRef(null); // Ref to track currently hovered object
+  const lastInteractionTimeRef = useRef(Date.now()); // Track last interaction time
 
   useEffect(() => {
     // --- Prevent Double Initialization --- 
@@ -116,6 +130,10 @@ const Scene3D = () => {
     let currentTheta = initialTheta;
     const damping = 0.05; // Damping factor for smooth motion
     
+    // Setup raycaster for object interaction
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    
     // Track mouse position
     const handleMouseMove = (event) => {
       // Calculate mouse position as percentage from center
@@ -128,6 +146,10 @@ const Scene3D = () => {
       
       // Clamp the polar angle to avoid flipping
       targetPhi = Math.max(0.1, Math.min(Math.PI - 0.1, targetPhi));
+      
+      // Update mouse position for raycasting
+      mouse.x = mouseX;
+      mouse.y = -mouseY; // Invert Y for Three.js coordinate system
     };
     
     window.addEventListener('mousemove', handleMouseMove);
@@ -149,23 +171,55 @@ const Scene3D = () => {
         model.position.y = -center.y
         model.position.z = -center.z
         
-        // Enable shadows on the model
+        // Process each object in the model
         model.traverse((node) => {
           if (node.isMesh) {
-            node.castShadow = true
-            node.receiveShadow = true
+            node.castShadow = true;
+            node.receiveShadow = true;
+            
+            // Skip specified objects for animations
+            if (node.name !== "Polygon Reduction.12" && node.name !== "SM_AI_vol1_05_table_01") {
+              // Store original position and rotation
+              node.userData.originalPosition = node.position.clone();
+              node.userData.originalRotation = node.rotation.clone();
+              
+              // Random direction vector (normalized)
+              node.userData.randomDirection = new THREE.Vector3(
+                Math.random() * 2 - 1,
+                Math.random() * 2 - 1,
+                Math.random() * 2 - 1
+              ).normalize().multiplyScalar(CONFIG.objectAnimation.movementDistance);
+              
+              // Random rotation in degrees (within CONFIG range), converted to radians
+              const randomDegrees = (Math.random() * 2 - 1) * CONFIG.objectAnimation.rotationDegrees;
+              const randomRadians = randomDegrees * (Math.PI / 180);
+              node.userData.rotationOffset = new THREE.Vector3(
+                randomRadians,
+                randomRadians,
+                randomRadians
+              );
+              
+              // Remove the hasBeenHovered flag so objects can be animated multiple times
+              // Set a reset timer for this object
+              node.userData.resetTimerId = null;
+              
+              // Store reference to mesh
+              modelObjectsRef.current[node.uuid] = node;
+            }
+            
+            console.log(`Model part found: ${node.name}`);
           }
-        })
+        });
         
         // Hide loading indicator
         if (loadingRef.current) {
-          loadingRef.current.style.display = 'none'
+          loadingRef.current.style.display = 'none';
         }
         
         // Dispatch event to notify that 3D scene is loaded
         window.dispatchEvent(new Event('scene3d-loaded'));
         
-        console.log('Model loaded successfully')
+        console.log('Model loaded successfully');
       },
       (xhr) => {
         // Loading progress
@@ -197,7 +251,7 @@ const Scene3D = () => {
     
     // Animation loop with smooth camera movement
     function animate() {
-      animationFrameIdRef.current = requestAnimationFrame(animate)
+      animationFrameIdRef.current = requestAnimationFrame(animate);
       
       // Apply damping to smoothly transition to target rotation
       currentPhi += (targetPhi - currentPhi) * damping;
@@ -210,6 +264,81 @@ const Scene3D = () => {
       
       // Make sure camera always looks at the center
       camera.lookAt(cameraTarget);
+      
+      // Perform raycasting if scene is loaded
+      if (sceneRef.current) {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
+        
+        // Handle new hover
+        if (intersects.length > 0) {
+          // Find the first object that's not in the excluded list
+          const hoveredObject = intersects.find(intersect => 
+            intersect.object.name !== "Polygon Reduction.12" && 
+            intersect.object.name !== "SM_AI_vol1_05_table_01" && 
+            modelObjectsRef.current[intersect.object.uuid]
+          );
+          
+          if (hoveredObject) {
+            const obj = hoveredObject.object;
+            hoveredObjectRef.current = obj.uuid;
+            
+            // Update last interaction time
+            lastInteractionTimeRef.current = Date.now();
+            
+            // Clear any existing reset timer
+            if (obj.userData.resetTimerId) {
+              clearTimeout(obj.userData.resetTimerId);
+              obj.userData.resetTimerId = null;
+            }
+            
+            // Calculate target position using random direction from current position
+            const targetPos = obj.position.clone().add(obj.userData.randomDirection);
+            
+            // Calculate target rotation from current rotation
+            const targetRotX = obj.rotation.x + obj.userData.rotationOffset.x;
+            const targetRotY = obj.rotation.y + obj.userData.rotationOffset.y;
+            const targetRotZ = obj.rotation.z + obj.userData.rotationOffset.z;
+            
+            // Animate to new position and rotation
+            obj.userData.targetPosition = targetPos;
+            obj.userData.targetRotation = new THREE.Vector3(targetRotX, targetRotY, targetRotZ);
+            
+            // Set a timeout to return to original position after CONFIG.resetDelay
+            obj.userData.resetTimerId = setTimeout(() => {
+              obj.userData.targetPosition = obj.userData.originalPosition.clone();
+              obj.userData.targetRotation = new THREE.Vector3(
+                obj.userData.originalRotation.x,
+                obj.userData.originalRotation.y,
+                obj.userData.originalRotation.z
+              );
+            }, CONFIG.objectAnimation.resetDelay);
+            
+            // Continue animation until target is reached
+            if (obj.userData.targetPosition) {
+              obj.position.lerp(obj.userData.targetPosition, CONFIG.objectAnimation.animationSpeed * 2);
+              obj.rotation.x = THREE.MathUtils.lerp(obj.rotation.x, obj.userData.targetRotation.x, CONFIG.objectAnimation.animationSpeed * 2);
+              obj.rotation.y = THREE.MathUtils.lerp(obj.rotation.y, obj.userData.targetRotation.y, CONFIG.objectAnimation.animationSpeed * 2);
+              obj.rotation.z = THREE.MathUtils.lerp(obj.rotation.z, obj.userData.targetRotation.z, CONFIG.objectAnimation.animationSpeed * 2);
+            }
+          } else {
+            hoveredObjectRef.current = null;
+          }
+        } else {
+          hoveredObjectRef.current = null;
+        }
+        
+        // Continue animations for all objects with target positions
+        Object.values(modelObjectsRef.current).forEach(obj => {
+          if (obj.userData.targetPosition) {
+            // Continue animation to target position and rotation
+            obj.position.lerp(obj.userData.targetPosition, CONFIG.objectAnimation.animationSpeed);
+            obj.rotation.x = THREE.MathUtils.lerp(obj.rotation.x, obj.userData.targetRotation.x, CONFIG.objectAnimation.animationSpeed);
+            obj.rotation.y = THREE.MathUtils.lerp(obj.rotation.y, obj.userData.targetRotation.y, CONFIG.objectAnimation.animationSpeed);
+            obj.rotation.z = THREE.MathUtils.lerp(obj.rotation.z, obj.userData.targetRotation.z, CONFIG.objectAnimation.animationSpeed);
+          }
+        });
+      }
       
       if (controlsRef.current) controlsRef.current.update()
       if (rendererRef.current && sceneRef.current) {
@@ -238,6 +367,15 @@ const Scene3D = () => {
         controlsRef.current.dispose();
         controlsRef.current = null;
       }
+      
+      // Clear object references and timers
+      Object.values(modelObjectsRef.current).forEach(obj => {
+        if (obj.userData.resetTimerId) {
+          clearTimeout(obj.userData.resetTimerId);
+        }
+      });
+      modelObjectsRef.current = {};
+      hoveredObjectRef.current = null;
       
       // Dispose scene resources (geometry, materials, textures)
       if (sceneRef.current) {
