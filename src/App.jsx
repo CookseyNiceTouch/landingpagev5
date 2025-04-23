@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Hero from './components/Hero'
 import FeaturesSection from './components/FeaturesSection'
+import CTASection from './components/ctasection'
 import './App.css'
 import './components/LandingPage.css'
 
@@ -48,6 +49,7 @@ function App() {
     <div className="app">
       <Hero />
       <FeaturesSection features={features} />
+      <CTASection />
     </div>
   )
 }
