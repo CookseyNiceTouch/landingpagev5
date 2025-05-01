@@ -93,6 +93,29 @@
   max-width: 100%;
 }
 
+/* Rive Animation Styling */
+.animation-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  max-width: 600px;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #D7A7D6 0%, #9859A7 100%);
+  overflow: hidden;
+}
+
+/* Fix for right-handed layout */
+.feature-image-right .feature-image-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rive-animation {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .feature-content {
   flex: 1;
   min-width: 300px;
@@ -139,6 +162,11 @@
     margin-right: 0;
     margin-left: 0;
     margin-bottom: 2rem;
+    width: 100%;
+  }
+  
+  .animation-container {
+    height: 300px;
     width: 100%;
   }
 } 

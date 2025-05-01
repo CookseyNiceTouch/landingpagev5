@@ -11,12 +11,14 @@ function App() {
     {
       title: "Chat with your AI edit assistant to automate repetitive tasks.",
       description: "Tell it to organize your timeline, apply a rough grade, or build out a draft sequence—it responds instantly. Automate repetitive tasks",
-      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=AI+Chat+Interface"
+      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=AI+Chat+Interface",
+      artboard: "AI_edit_assistant"
     },
     {
       title: "Context-Aware Workflow",
       description: "Pull in briefs, transcripts, and notes to give your AI the full picture. Nice Touch builds a contextual understanding of your project - automatically linking relevant tasks, creative direction, and client expectations.",
-      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Context+Aware"
+      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Context+Aware",
+      artboard: "Context_Aware_Workflow"
     },
     {
       title: "File Management, Sorted",
@@ -36,7 +38,8 @@ function App() {
     {
       title: "Feedback Centralized",
       description: "Emails, links, meetings—we pull it all into one feedback stream. Every comment is linked to timecodes or files. Nothing gets missed.",
-      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Feedback+System"
+      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Feedback+System",
+      artboard: "Feedback_Centralized"
     },
     {
       title: "Privacy & Security First",

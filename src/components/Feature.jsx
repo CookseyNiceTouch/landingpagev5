@@ -1,10 +1,15 @@
 import React from 'react';
+import RiveAnimation from './RiveAnimation';
 
-const Feature = ({ title, description, image, imageAlt, imagePosition = 'left' }) => {
+const Feature = ({ title, description, image, imageAlt, imagePosition = 'left', artboard }) => {
   return (
     <div className={`feature-card feature-image-${imagePosition}`}>
       <div className="feature-image-container">
-        {image && <img src={image} alt={imageAlt || title} className="feature-image" />}
+        {artboard ? (
+          <RiveAnimation artboard={artboard} />
+        ) : (
+          image && <img src={image} alt={imageAlt || title} className="feature-image" />
+        )}
       </div>
       <div className="feature-content">
         <h3 className="feature-title">{title}</h3>

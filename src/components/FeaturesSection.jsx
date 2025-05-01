@@ -21,6 +21,7 @@ const FeaturesSection = ({ features }) => {
               image={feature.image}
               imageAlt={feature.imageAlt}
               imagePosition={index % 2 === 0 ? 'left' : 'right'}
+              artboard={feature.artboard}
             />
           </div>
         ))}
