@@ -23,17 +23,20 @@ function App() {
     {
       title: "File Management, Sorted",
       description: "From messy imports to ready-to-edit structures. Nice Touch builds clean, synced folder systems for your assets - based on your setup. Set your structure once, and the AI repeats it every time and flexes with your work.",
-      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=File+Management"
+      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=File+Management",
+      artboard: "File_Management_Sorted"
     },
     {
       title: "No New Tools to Learn",
       description: "Just powerful shortcuts in the tools you already use. Nice Touch runs alongside Premiere, DaVinci, or After Effects—think of it like superpowers for your current setup.",
-      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Existing+Tools"
+      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Existing+Tools",
+      artboard: "No_New_Tools_to_Learn"
     },
     {
       title: "Error Spotting Before Export",
       description: "Last-minute glitches? We catch them first. Nice Touch scans for missing media, mismatched framerates, and common export issues.",
-      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Error+Detection"
+      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Error+Detection",
+      artboard: "Error_Spotting_Before_Export"
     },
     {
       title: "Feedback Centralized",

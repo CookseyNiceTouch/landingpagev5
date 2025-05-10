@@ -5,7 +5,7 @@ const RiveAnimation = ({ artboard }) => {
   return (
     <div className="animation-container"> 
       <Rive
-        src="/web_page_section_01.riv"
+        src="/web_page_current.riv"
         className="rive-animation"
         artboard={artboard}
         animations="Timeline"
