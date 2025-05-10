@@ -1,9 +1,9 @@
 import React from 'react';
 import Rive from '@rive-app/react-canvas';
 
-const RiveAnimation = ({ artboard }) => {
+const RiveAnimation = ({ artboard, className }) => {
   return (
-    <div className="animation-container"> 
+    <div className={className ? `animation-container ${className}` : 'animation-container'}>
       <Rive
         src="/web_page_current.riv"
         className="rive-animation"

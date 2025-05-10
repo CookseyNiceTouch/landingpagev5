@@ -141,7 +141,7 @@
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   text-transform: uppercase;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   min-width: 120px;
   text-decoration: none;
   text-align: center;
@@ -174,7 +174,7 @@
 .row-success {
   text-align: left;
   padding: 0rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   animation: fadeIn 0.5s ease-out;
 }
 
