@@ -45,6 +45,13 @@
   max-width: 1800px;
   margin: 0 auto;
   width: 100%;
+  transition: transform 0.2s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+.feature-wrapper:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 32px 0 rgba(152, 89, 167, 0.18), 0 1.5px 6px 0 rgba(0,0,0,0.08);
+  z-index: 2;
 }
 
 /* Feature Card Styles */

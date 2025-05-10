@@ -9,7 +9,7 @@ const CONFIG = {
   // Object hover animation settings
   objectAnimation: {
     movementDistance: 0.025, // Maximum distance objects move when hovered (reduced from 0.05)
-    rotationDegrees: 1, // Maximum rotation in degrees (+/-)
+    rotationDegrees: 5, // Maximum rotation in degrees (+/-)
     resetDelay: 3000, // Time in ms before objects return to original position
     animationSpeed: 0.05 // Animation interpolation speed (higher = faster)
   }
@@ -26,6 +26,7 @@ const Scene3D = () => {
   const modelObjectsRef = useRef({}); // Ref to store model objects
   const hoveredObjectRef = useRef(null); // Ref to track currently hovered object
   const lastInteractionTimeRef = useRef(Date.now()); // Track last interaction time
+  const lastMouseMoveTimeRef = useRef(Date.now()); // Track last mouse move time
 
   useEffect(() => {
     // --- Prevent Double Initialization --- 
@@ -150,6 +151,9 @@ const Scene3D = () => {
       // Update mouse position for raycasting
       mouse.x = mouseX;
       mouse.y = -mouseY; // Invert Y for Three.js coordinate system
+
+      // Update last mouse move time
+      lastMouseMoveTimeRef.current = Date.now();
     };
     
     window.addEventListener('mousemove', handleMouseMove);
@@ -265,8 +269,12 @@ const Scene3D = () => {
       // Make sure camera always looks at the center
       camera.lookAt(cameraTarget);
       
-      // Perform raycasting if scene is loaded
-      if (sceneRef.current) {
+      // Only perform hover logic if mouse has moved recently (within 100ms)
+      const now = Date.now();
+      const mouseRecentlyMoved = (now - lastMouseMoveTimeRef.current) < 100;
+      
+      // Perform raycasting if scene is loaded and mouse recently moved
+      if (sceneRef.current && mouseRecentlyMoved) {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(sceneRef.current.children, true);
         
@@ -327,18 +335,21 @@ const Scene3D = () => {
         } else {
           hoveredObjectRef.current = null;
         }
-        
-        // Continue animations for all objects with target positions
-        Object.values(modelObjectsRef.current).forEach(obj => {
-          if (obj.userData.targetPosition) {
-            // Continue animation to target position and rotation
-            obj.position.lerp(obj.userData.targetPosition, CONFIG.objectAnimation.animationSpeed);
-            obj.rotation.x = THREE.MathUtils.lerp(obj.rotation.x, obj.userData.targetRotation.x, CONFIG.objectAnimation.animationSpeed);
-            obj.rotation.y = THREE.MathUtils.lerp(obj.rotation.y, obj.userData.targetRotation.y, CONFIG.objectAnimation.animationSpeed);
-            obj.rotation.z = THREE.MathUtils.lerp(obj.rotation.z, obj.userData.targetRotation.z, CONFIG.objectAnimation.animationSpeed);
-          }
-        });
+      } else {
+        // If mouse is not moving, do not trigger hover logic
+        hoveredObjectRef.current = null;
       }
+      
+      // Continue animations for all objects with target positions
+      Object.values(modelObjectsRef.current).forEach(obj => {
+        if (obj.userData.targetPosition) {
+          // Continue animation to target position and rotation
+          obj.position.lerp(obj.userData.targetPosition, CONFIG.objectAnimation.animationSpeed);
+          obj.rotation.x = THREE.MathUtils.lerp(obj.rotation.x, obj.userData.targetRotation.x, CONFIG.objectAnimation.animationSpeed);
+          obj.rotation.y = THREE.MathUtils.lerp(obj.rotation.y, obj.userData.targetRotation.y, CONFIG.objectAnimation.animationSpeed);
+          obj.rotation.z = THREE.MathUtils.lerp(obj.rotation.z, obj.userData.targetRotation.z, CONFIG.objectAnimation.animationSpeed);
+        }
+      });
       
       if (controlsRef.current) controlsRef.current.update()
       if (rendererRef.current && sceneRef.current) {
