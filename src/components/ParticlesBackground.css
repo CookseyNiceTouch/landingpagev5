@@ -7,14 +7,14 @@
   overflow: hidden;
   pointer-events: none; /* So it doesn't interfere with user interaction */
   z-index: 1;
-  
-  /* 3D space setup - uses CSS variables for easier JS control */
-  perspective: var(--perspective, 800px);
-  transform-style: preserve-3d;
-  perspective-origin: 50% 50%;
-  
-  /* Debug outline - remove in production */
-  /* outline: 1px solid rgba(255, 0, 0, 0.2); */
+}
+
+.particles-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .particle {
@@ -30,6 +30,7 @@
   
   /* The JS sets transform directly, this is just for floating motion */
   animation: float-alt1 20s infinite ease-in-out;
+  filter: blur(2px);
 }
 
 /* Define multiple different float animations */

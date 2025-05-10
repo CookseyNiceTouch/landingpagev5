@@ -7,6 +7,7 @@ const CTASection = () => {
     <div className="cta-section">
       <div className="cta-background" />
       <div className="cta-container">
+        <img src="/ntlogo.png" alt="Nice Touch Logo" className="cta-logo" />
         <div className="cta-content">
           <h1 className="cta-title">Join the List and </h1>
           <h4 className="cta-subtitle">Help Shape the Future of Post-Production.</h4>

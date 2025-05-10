@@ -3,205 +3,198 @@ import './ParticlesBackground.css';
 
 // Configuration variables - feel free to adjust these
 const PARTICLE_CONFIG = {
-  count: 500,                  // Number of particles
+  count: 2000,                 // Increased to 5000 particles
   sizeMin: 2,                  // Minimum size in pixels
-  sizeMax: 12,                 // Maximum size in pixels
+  sizeMax: 8,                  // Maximum size in pixels
   opacityMin: 0.1,             // Minimum opacity
   opacityMax: 0.6,             // Maximum opacity
-  speedMin: 0.03,              // Minimum parallax speed factor (reduced for slower movement)
-  speedMax: 0.15,              // Maximum parallax speed factor (reduced for slower movement)
+  speedMin: 0.03,              // Minimum parallax speed factor
+  speedMax: 0.06,              // Maximum parallax speed factor
   floatAmplitude: 15,          // Float animation distance in pixels
-  floatSpeed: 15,              // Float animation duration in seconds
-  zDepthMin: -1500,             // Minimum z-depth value (negative = further away) (increased range)
-  zDepthMax: 0,                // Maximum z-depth value (positive = closer)
-  perspective: 400,           // CSS perspective value for 3D effect
-  colors: [                    // Array of possible colors (will pick randomly)
+  floatSpeed: 200,              // Float animation duration in seconds
+  zDepthMin: -1500,            // Minimum z-depth value
+  zDepthMax: 0,                // Maximum z-depth value
+  colors: [                    // Array of possible colors
     'rgba(255, 255, 255, 1)',  // White
-    'rgba(230, 230, 255, 1)',  // Light blue-ish
-    'rgba(255, 230, 255, 1)'   // Light pink-ish
-  ]
+    'rgb(167, 167, 255)',  // Light blue-ish
+    'rgb(255, 190, 255)'   // Light pink-ish
+  ],
+  // New Voronoi configuration
+  voronoiPoints: 200,          // Number of Voronoi points
+  densityVariation: 0.7,      // How much the density varies (0-1)
+  minClusterSize: 50,         // Minimum size of a cluster
+  maxClusterSize: 200         // Maximum size of a cluster
 };
 
 const ParticlesBackground = ({ config = {} }) => {
-  const particlesRef = useRef(null);
+  const canvasRef = useRef(null);
+  const particlesRef = useRef([]);
+  const animationFrameRef = useRef(null);
+  const lastTimeRef = useRef(0);
   
   // Merge provided config with defaults
   const particleConfig = { ...PARTICLE_CONFIG, ...config };
-  
+
   useEffect(() => {
-    const particles = [];
-    const container = particlesRef.current;
-    
-    // IMPORTANT: Directly set CSS variables for the container
-    container.style.setProperty('--perspective', `${particleConfig.perspective}px`);
-    
-    // Use ResizeObserver to handle container size changes
-    const resizeObserver = new ResizeObserver(() => {
-      // Clear existing particles
-      particles.forEach(particle => particle.remove());
-      particles.length = 0;
-      
-      // Get current container dimensions
-      const containerWidth = container.offsetWidth;
-      const containerHeight = container.offsetHeight;
-      
-      // Create new particles with updated dimensions
-      createParticles(containerWidth, containerHeight);
-    });
-    
-    resizeObserver.observe(container);
-    
-    // Function to create particles
-    const createParticles = (width, height) => {
-      // Create a document fragment for better performance
-      const fragment = document.createDocumentFragment();
-      
-      for (let i = 0; i < particleConfig.count; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        // Create 3 equal groups of particles for each depth layer
-        // This ensures we have visible particles at different depths
-        let zDepthNormalized;
-        if (i < particleConfig.count / 3) {
-          // Far layer (0.0 - 0.33)
-          zDepthNormalized = Math.random() * 0.33;
-        } else if (i < 2 * particleConfig.count / 3) {
-          // Middle layer (0.33 - 0.66)
-          zDepthNormalized = 0.33 + Math.random() * 0.33;
-        } else {
-          // Near layer (0.66 - 1.0)
-          zDepthNormalized = 0.66 + Math.random() * 0.34;
-        }
-        
-        // Calculate z-depth from normalized value
-        const zDepth = lerp(particleConfig.zDepthMin, particleConfig.zDepthMax, zDepthNormalized);
-        
-        // Distribute particles evenly across width and height
-        const x = Math.random() * width;
-        const y = Math.random() * height;
-        
-        // Use a stronger non-linear scaling for more dramatic depth effect
-        const depthFactor = Math.pow(zDepthNormalized, 1.2);
-        
-        // Size scales with depth - closer particles are larger (higher z-index values)
-        const baseSize = lerp(particleConfig.sizeMin, particleConfig.sizeMax, Math.random());
-        const size = baseSize * lerp(0.5, 3.0, depthFactor);
-        
-        // Opacity scales with depth - closer particles are more opaque
-        const opacity = lerp(
-          particleConfig.opacityMin, 
-          particleConfig.opacityMax,
-          lerp(0.7, 1.0, depthFactor) * Math.random()
-        );
-        
-        // Speed scales with depth - CRITICAL CHANGE:
-        // Lower speed for closer particles to create a proper parallax effect
-        // Background elements should move slower than foreground elements
-        const baseSpeedFactor = lerp(particleConfig.speedMin, particleConfig.speedMax, Math.random());
-        const speedFactor = baseSpeedFactor * lerp(1.5, 0.5, depthFactor); // Inverted scaling - farther particles move faster
-        
-        // Float animation properties
-        const animationDelay = Math.random() * particleConfig.floatSpeed;
-        const animationDuration = particleConfig.floatSpeed * lerp(1.2, 0.8, depthFactor);
-        
-        // Random animation type (1-3)
-        const animationType = Math.floor(Math.random() * 3) + 1;
-        
-        // Random color from the defined array
-        const colorIndex = Math.floor(Math.random() * particleConfig.colors.length);
-        const color = particleConfig.colors[colorIndex];
-        
-        // Apply styles
-        Object.assign(particle.style, {
-          width: `${size}px`,
-          height: `${size}px`,
-          left: `${x}px`,
-          top: `${y}px`,
-          opacity: opacity.toString(),
-          backgroundColor: color,
-          animationDuration: `${animationDuration}s`,
-          animationDelay: `-${animationDelay}s`,
-          // IMPORTANT: Add animation class based on type rather than using nth-child
-          animationName: `float-alt${animationType}`
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let width = canvas.width;
+    let height = canvas.height;
+
+    // Generate Voronoi points
+    const generateVoronoiPoints = () => {
+      const points = [];
+      for (let i = 0; i < particleConfig.voronoiPoints; i++) {
+        points.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          density: Math.random() * particleConfig.densityVariation
         });
-        
-        // Set z-index based on depth (closest particles on top)
-        const zIndex = Math.floor(lerp(1, 100, depthFactor)); // Increased z-index range
-        particle.style.zIndex = zIndex.toString();
-        
-        // Store data for scroll handling
-        particle.dataset.speed = speedFactor.toString();
-        particle.dataset.baseY = y.toString();
-        particle.dataset.z = zDepth.toString();
-        particle.dataset.x = x.toString();
-        particle.dataset.depthFactor = depthFactor.toString();
-        
-        // Add to fragment
-        fragment.appendChild(particle);
-        particles.push(particle);
+      }
+      return points;
+    };
+
+    // Calculate distance between two points
+    const distance = (x1, y1, x2, y2) => {
+      return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    };
+
+    // Find the closest Voronoi point to a given position
+    const findClosestPoint = (x, y, points) => {
+      let closest = points[0];
+      let minDist = distance(x, y, points[0].x, points[0].y);
+      
+      for (let i = 1; i < points.length; i++) {
+        const dist = distance(x, y, points[i].x, points[i].y);
+        if (dist < minDist) {
+          minDist = dist;
+          closest = points[i];
+        }
+      }
+      return closest;
+    };
+
+    // Initialize particles with Voronoi-based distribution
+    const initParticles = () => {
+      particles = [];
+      const voronoiPoints = generateVoronoiPoints();
+      const totalParticles = particleConfig.count;
+      
+      // Create a grid of potential particle positions
+      const gridSize = 20; // Size of grid cells
+      const grid = [];
+      
+      for (let x = 0; x < width; x += gridSize) {
+        for (let y = 0; y < height; y += gridSize) {
+          const closestPoint = findClosestPoint(x, y, voronoiPoints);
+          const dist = distance(x, y, closestPoint.x, closestPoint.y);
+          const maxDist = Math.max(width, height) * 0.3; // Maximum influence distance
+          
+          // Calculate density based on distance and Voronoi point's density
+          const density = closestPoint.density * (1 - Math.min(dist / maxDist, 1));
+          
+          // Add position to grid with its density
+          grid.push({ x, y, density });
+        }
       }
       
-      // Add all particles at once for better performance
-      container.appendChild(fragment);
+      // Sort grid by density
+      grid.sort((a, b) => b.density - a.density);
       
-      // Initial position update
-      handleScroll();
-    };
-    
-    // Function to update particle position based on scroll
-    function updateParticlePosition(particle, scrollOffset) {
-      const speed = parseFloat(particle.dataset.speed);
-      const zDepth = parseFloat(particle.dataset.z);
-      const x = parseFloat(particle.dataset.x);
-      const baseY = parseFloat(particle.dataset.baseY);
-      
-      // IMPORTANT CHANGE: Reverse the direction of scrollOffset
-      // This makes particles move slower than page content (negative parallax)
-      // for a true "background" effect
-      particle.style.transform = `translate3d(0, ${-scrollOffset * speed}px, ${zDepth}px)`;
-    }
-    
-    // Utility function for linear interpolation
-    function lerp(min, max, t) {
-      return min * (1 - t) + max * t;
-    }
-    
-    // Add scroll listener for parallax effect
-    const handleScroll = () => {
-      // Get window scroll position
-      const scrollY = window.scrollY || window.pageYOffset;
-      
-      // Get container's position
-      const containerRect = container.getBoundingClientRect();
-      const containerTop = containerRect.top + scrollY;
-      
-      // Calculate relative scroll position
-      const relativeScrollY = scrollY - containerTop;
-      
-      // Update particle positions
-      requestAnimationFrame(() => {
-        particles.forEach(particle => {
-          updateParticlePosition(particle, relativeScrollY);
+      // Distribute particles based on density
+      for (let i = 0; i < totalParticles; i++) {
+        const gridIndex = Math.floor(Math.random() * (grid.length * 0.3)); // Use top 30% of dense areas
+        const pos = grid[gridIndex];
+        
+        // Add some randomness to the position
+        const x = pos.x + (Math.random() - 0.5) * gridSize;
+        const y = pos.y + (Math.random() - 0.5) * gridSize;
+        
+        particles.push({
+          x,
+          y,
+          size: lerp(
+            particleConfig.sizeMin,
+            particleConfig.sizeMax,
+            Math.pow(Math.random(), 10) // Logarithmic-like distribution: more small, fewer large
+          ),
+          opacity: lerp(particleConfig.opacityMin, particleConfig.opacityMax, Math.random()),
+          speed: lerp(particleConfig.speedMin, particleConfig.speedMax, Math.random()),
+          color: particleConfig.colors[Math.floor(Math.random() * particleConfig.colors.length)],
+          zDepth: lerp(particleConfig.zDepthMin, particleConfig.zDepthMax, Math.random()),
+          floatOffset: Math.random() * Math.PI * 2,
+          floatSpeed: lerp(0.5, 1.5, Math.random())
         });
-      });
+      }
     };
-    
-    // Add scroll event listener and trigger initial positioning
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    
-    // Clean up on component unmount
+
+    // Handle resize
+    const handleResize = () => {
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+      initParticles();
+    };
+
+    // Animation loop
+    const animate = (time) => {
+      if (!lastTimeRef.current) lastTimeRef.current = time;
+      const deltaTime = (time - lastTimeRef.current) / 1000;
+      lastTimeRef.current = time;
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Update and draw particles
+      particles.forEach(particle => {
+        // Update position
+        const floatX = Math.sin(time * 0.001 * particle.floatSpeed + particle.floatOffset) * particleConfig.floatAmplitude;
+        const floatY = Math.cos(time * 0.001 * particle.floatSpeed + particle.floatOffset) * particleConfig.floatAmplitude;
+        
+        // Calculate parallax effect
+        const scrollY = window.scrollY || window.pageYOffset;
+        const parallaxY = scrollY * particle.speed;
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(
+          particle.x + floatX,
+          particle.y + floatY - parallaxY,
+          particle.size,
+          0,
+          Math.PI * 2
+        );
+        ctx.fillStyle = particle.color;
+        ctx.globalAlpha = particle.opacity;
+        ctx.fill();
+      });
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    // Initialize
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    // Cleanup
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      resizeObserver.disconnect();
-      particles.forEach(particle => particle.remove());
+      window.removeEventListener('resize', handleResize);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, [particleConfig]);
-  
+
   return (
-    <div className="particles-container" ref={particlesRef}></div>
+    <div className="particles-container">
+      <canvas ref={canvasRef} className="particles-canvas" />
+    </div>
   );
 };
+
+// Utility function for linear interpolation
+function lerp(min, max, t) {
+  return min * (1 - t) + max * t;
+}
 
 export default ParticlesBackground; 
