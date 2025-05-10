@@ -45,6 +45,12 @@ function App() {
       artboard: "Feedback_Centralized"
     },
     {
+      title: "Scalable Metadata Architecture",
+      description: "asset gets a unique ID and AI-generated, timecoded metadata—enabling agents to understand and work with your media for smarter automation, editing, and reuse.",
+      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Scaleable+Metadata+Architecture",
+      artboard: "Scalable_Metadata_Architecture"
+    },
+    {
       title: "Privacy & Security First",
       description: "Your work stays yours. Always. Nice Touch is built with strict data privacy in mind. Your files, feedback, and conversations are encrypted and never used to train outside models or shared without your permission.",
       image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Privacy+%26+Security"

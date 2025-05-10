@@ -7,9 +7,6 @@ const CTASection = () => {
     <div className="cta-section">
       <div className="cta-background" />
       <div className="cta-container">
-        <div className="cta-image-placeholder">
-          {/* Placeholder for image */}
-        </div>
         <div className="cta-content">
           <h1 className="cta-title">Join the List and </h1>
           <h4 className="cta-subtitle">Help Shape the Future of Post-Production.</h4>
