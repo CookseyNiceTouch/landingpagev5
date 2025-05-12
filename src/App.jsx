@@ -53,7 +53,8 @@ function App() {
     {
       title: "Privacy & Security First",
       description: "Your work stays yours. Always. Nice Touch is built with strict data privacy in mind. Your files, feedback, and conversations are encrypted and never used to train outside models or shared without your permission.",
-      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Privacy+%26+Security"
+      image: "https://placehold.co/600x400/9859A7/FFFFFF/png?text=Privacy+%26+Security", 
+      artboard: "Privacy_Security_First"
     }
   ];
 
