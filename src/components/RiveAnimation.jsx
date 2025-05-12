@@ -9,7 +9,7 @@ const RiveAnimation = ({ artboard, className }) => {
         className="rive-animation"
         artboard={artboard}
         animations="Timeline"
-        fit="contain"
+        fit="cover"
         autoPlay={true}
         loop={true}
       />
