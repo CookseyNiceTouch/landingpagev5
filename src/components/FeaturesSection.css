@@ -136,7 +136,9 @@
   min-width: 300px;
   max-width: 800px;
   text-align: left;
-  padding: 1.5rem 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .feature-title {
@@ -198,6 +200,7 @@
     margin-left: 0;
     margin-bottom: 2rem;
     width: 100%;
+    box-sizing: border-box;
   }
   
   .animation-container {
@@ -207,8 +210,10 @@
   }
 
   .feature-content {
-    padding: 2.5rem 0;
+    padding: 0;
     max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .feature-title {
