@@ -45,7 +45,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 8rem;
+  gap: 4rem;
 }
 
 .feature-wrapper {
@@ -68,7 +68,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  padding: 2.5rem;
+  padding: 1.5rem 1rem;
   background: rgba(255, 255, 255, 0.075);
   border-radius: 2rem;
   backdrop-filter: blur(10px);
@@ -136,7 +136,7 @@
   min-width: 300px;
   max-width: 800px;
   text-align: left;
-  padding: 5rem;
+  padding: 1.5rem 0;
 }
 
 .feature-title {
@@ -178,6 +178,11 @@
   
   .features-intro {
     padding: 2rem 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .features-container {
+    gap: 4rem;
   }
   
   .feature-card, 
@@ -198,5 +203,20 @@
   .animation-container {
     height: 300px;
     width: 100%;
+    box-sizing: border-box;
+  }
+
+  .feature-content {
+    padding: 2.5rem 0;
+    max-width: 100%;
+  }
+
+  .feature-title {
+    font-size: 2rem;
+  }
+
+  .feature-description {
+    font-size: 1rem;
+    line-height: 1.5;
   }
 } 
